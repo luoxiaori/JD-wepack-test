@@ -1,0 +1,56 @@
+npm install sass-loader node-sass --save-dev
+并修改配置
+
+npm i html-loader vue-loader css-loader style-loader -D
+并修改配置
+**注意**vue-loader需要npm install -D vue-loader vue-template-compiler
+        在webpack.config中引入并在plugins引入:
+        const VueLoaderPlugin = require('vue-loader/lib/plugin')
+        plugins: [new VueLoaderPlugin()]
+
+
+
+给reset.css和home.vue、router/index.js写内容（参看vuerouter文档），安装vue和vue-router
+npm i vue vue-router
+
+装npm i clean-webpack-plugin -D
+
+写HtmlWebpackPlugin（修改配置）的模板文件views/index.html
+
+
+用构建工具将px转成rem
+npm install px2rem-loader
+配置webpack.config.js
+        {
+            test:/\.vue$/,
+            loader: "vue-loader",
+            options: {
+                loaders: {
+                  css: 'vue-style-loader!css-loader!px2rem-loader?remUnit=75&remPrecision=8',
+                  scss: 'vue-style-loader!css-loader!px2rem-loader?remUnit=75&remPrecision=8!sass-loader'
+                }
+            }
+        }
+XXX并没有px变成rem
+
+
+css模块化
+    上面的option中加cssModules: {
+                  localIdentName: '[path][name]---[local]---[hash:base64:5]',
+                  camelCase: true
+                },
+
+并没有效果
+
+
+所有样式合并到一个文件npm install extract-text-webpack-plugin --save-dev
+const ExtractTextPlugin = require("extract-text-webpack-plugin");
+
+上面option修改css、scss
+css: ExtractTextPlugin.extract({use: 'css-loader?minimize!px2rem-loader?remUnit=40&remPrecision=8', fallback: 'vue-style-loader'}),
+scss: ExtractTextPlugin.extract({use: 'css-loader?minimize!px2rem-loader?remUnit=40&remPrecision=8!sass-loader', fallback: 'vue-style-loader'})
+plugin:new ExtractTextPlugin("style.css")
+
+报错npm install --save-dev extract-text-webpack-plugin@4.0.0-beta.0
+
+XXX重启项目样式文件还是没有变成<link href="style.css">
